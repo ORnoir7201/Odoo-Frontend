@@ -17,7 +17,7 @@ function formatDate(dateString) {
   });
 }
 
-export default function DashboardPage() {
+export default function DashboardPage({ onNavigate }) {
   const [stats, setStats] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -60,11 +60,31 @@ export default function DashboardPage() {
       {stats && (
         <>
           <div className="stats-grid">
-            <StatCard label="Contacts enregistrés" value={stats.contacts.total} />
-            <StatCard label="Produits au catalogue" value={stats.products.total} />
-            <StatCard label="Fournisseurs enregistrés" value={stats.suppliers.total} />
-            <StatCard label="Commandes d'achat" value={stats.purchasers.total} />
-            <StatCard label="Ventes enregistrées" value={stats.sales.total} />
+            <StatCard
+              label="Contacts enregistrés"
+              value={stats.contacts.total}
+              onClick={() => onNavigate('clients')}
+            />
+            <StatCard
+              label="Produits au catalogue"
+              value={stats.products.total}
+              onClick={() => onNavigate('products')}
+            />
+            <StatCard
+              label="Fournisseurs enregistrés"
+              value={stats.suppliers.total}
+              onClick={() => onNavigate('suppliers')}
+            />
+            <StatCard
+              label="Commandes d'achat"
+              value={stats.purchasers.total}
+              onClick={() => onNavigate('purchases')}
+            />
+            <StatCard
+              label="Ventes enregistrées"
+              value={stats.sales.total}
+              onClick={() => onNavigate('sales')}
+            />
           </div>
 
           <div className="dashboard-columns">

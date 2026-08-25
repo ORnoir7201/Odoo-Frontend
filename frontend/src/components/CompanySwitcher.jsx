@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import { getMyCompanies, switchCompany } from '../api/settings';
+import useClickOutside from '../hooks/useClickOutside';
 
 export default function CompanySwitcher() {
   const [companies, setCompanies] = useState([]);
   const [activeCompanyId, setActiveCompanyId] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useClickOutside(() => setIsOpen(false));
   const [isSwitching, setIsSwitching] = useState(false);
+
 
   useEffect(() => {
     getMyCompanies()
@@ -39,7 +42,7 @@ export default function CompanySwitcher() {
   }
 
   return (
-    <div className="purchase-toolbar__menu">
+    <div className="purchase-toolbar__menu" ref={menuRef}>
       <button className="app-nav__tab" onClick={() => setIsOpen((v) => !v)} disabled={isSwitching}>
         {activeCompany ? activeCompany.name : '—'} ▾
       </button>

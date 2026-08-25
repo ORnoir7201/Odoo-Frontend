@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import useClickOutside from '../hooks/useClickOutside';
 
 const THEMES = [
   { id: 'emerald', label: 'Émeraude' },
@@ -20,6 +21,7 @@ export function applyStoredTheme() {
 
 export default function ThemeSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useClickOutside(() => setIsOpen(false));
   const [current, setCurrent] = useState(localStorage.getItem(STORAGE_KEY) || 'emerald');
 
   useEffect(() => {
@@ -38,7 +40,7 @@ export default function ThemeSwitcher() {
   }
 
   return (
-    <div className="purchase-toolbar__menu">
+    <div className="purchase-toolbar__menu" ref={menuRef}>
       <button className="app-nav__tab" onClick={() => setIsOpen((v) => !v)} aria-label="Changer de style">
         🎨
       </button>

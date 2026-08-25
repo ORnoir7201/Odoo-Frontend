@@ -183,6 +183,7 @@ body {
 
 .field input,
 .field select {
+  width: 100%;
   font-family: var(--font-body);
   font-size: 14px;
   padding: 10px 12px;
@@ -613,6 +614,7 @@ body {
   font-size: 12px;
   color: var(--ink-muted);
   margin: 8px 0 0;
+  
 }
 
 /* --- Dashboard : colonnes des éléments récents --- */
@@ -700,10 +702,10 @@ body {
 
 .dialog-panel {
   background: var(--surface);
-  border-radius: 16px;
+  border-radius: 0px;
   padding: 32px;
   width: 100%;
-  max-width: 720px;
+  max-width: 930px;
   max-height: 88vh;
   overflow-y: auto;
   box-shadow: var(--shadow-lg);
@@ -1062,6 +1064,7 @@ body {
 }
 
 .textarea-field {
+  width: 100%;
   font-family: var(--font-body);
   font-size: 14px;
   padding: 10px 12px;
@@ -1263,20 +1266,21 @@ html[data-theme='ocean'] {
 }
 
 /* --- Jour --- */
+
 html[data-theme='jour'] {
-  --primary: #D9782F;
-  --primary-dark: #B85F1E;
-  --primary-light: #E8944F;
-  --accent: #2E86C1;
-  --accent-warm: #F4B942;
-  --bg: #FFFDF7;
-  --bg-alt: #FFF6E8;
+  --primary: #2563EB;
+  --primary-dark: #1D4ED8;
+  --primary-light: #60A5FA;
+  --accent: #6366F1;
+  --accent-warm: #14B8A6;
+  --bg: #F5F7FB;
+  --bg-alt: #EEF2F7;
   --surface: #FFFFFF;
-  --surface-tint: #FFFBF2;
-  --border: #F0E4CC;
-  --primary-rgb: 217, 120, 47;
-  --glow-a: rgba(217, 120, 47, 0.10);
-  --glow-b: rgba(46, 134, 193, 0.10);
+  --surface-tint: #F8FAFC;
+  --border: #DCE3ED;
+  --primary-rgb: 37, 99, 235;
+  --glow-a: rgba(37, 99, 235, 0.10);
+  --glow-b: rgba(99, 102, 241, 0.10);
 }
 
 /* --- Nuit (mode sombre) --- */
@@ -1362,4 +1366,13 @@ html[data-theme='night'] .textarea-field {
   color: var(--primary);
   border-bottom-color: var(--primary);
   font-weight: 600;
+}
+
+.stat-card--clickable {
+  cursor: pointer;
+}
+
+.stat-card--clickable:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }

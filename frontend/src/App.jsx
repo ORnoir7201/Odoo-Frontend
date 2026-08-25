@@ -81,7 +81,7 @@ function App() {
         <UserMenu onLogout={handleLogout} />
       </nav>
 
-      <ActivePage />
+      <ActivePage onNavigate={setActiveTab} />
     </div>
   );
 }
