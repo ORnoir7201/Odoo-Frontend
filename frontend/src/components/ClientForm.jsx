@@ -115,7 +115,7 @@ export default function ClientForm({ editingClient, onSubmit, onCancel, isSubmit
           {photoPreview ? <img src={photoPreview} alt={form.name} /> : <span>Aucune photo</span>}
         </div>
         <label className="btn btn--ghost">
-          Ajouter la photo
+          Ajouter/Changer la photo
           <input type="file" accept="image/*" onChange={handlePhotoChange} style={{ display: 'none' }} />
         </label>
       </div>

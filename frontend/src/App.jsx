@@ -15,15 +15,16 @@ import UserMenu from './components/UserMenu';
 import ThemeSwitcher, { applyStoredTheme } from './components/ThemeSwitcher';
 import { useState, useEffect } from 'react';
 import ConfigurationPage from './pages/ConfigurationPage';
+import { IconDashboard, IconContacts, IconProducts, IconSuppliers, IconPurchases, IconSales, IconSettings } from './components/Icons';
 
 const TABS = [
-  { id: 'dashboard', label: 'Tableau de bord' },
-  { id: 'clients', label: 'Contacts' },
-  { id: 'products', label: 'Produits' },
-  { id: 'suppliers', label: 'Fournisseurs' },
-  { id: 'purchases', label: 'Achats' },
-  { id: 'sales', label: 'Ventes' },
-  { id: 'settings', label: 'Configuration' },
+  { id: 'dashboard', label: 'Tableau de bord', icon: <IconDashboard size={16} /> },
+  { id: 'clients', label: 'Contacts', icon: <IconContacts size={16} /> },
+  { id: 'products', label: 'Produits', icon: <IconProducts size={16} /> },
+  { id: 'suppliers', label: 'Fournisseurs', icon: <IconSuppliers size={16} /> },
+  { id: 'purchases', label: 'Achats', icon: <IconPurchases size={16} /> },
+  { id: 'sales', label: 'Ventes', icon: <IconSales size={16} /> },
+  { id: 'settings', label: 'Configuration', icon: <IconSettings size={16} /> },
 ];
 
 const PAGES = {
@@ -72,6 +73,7 @@ function App() {
               className={`app-nav__tab ${activeTab === tab.id ? 'app-nav__tab--active' : ''}`}
               onClick={() => setActiveTab(tab.id)}
             >
+              {tab.icon}
               {tab.label}
             </button>
           ))}

@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { getDashboardStats } from '../api/dashboard';
 import StatCard from '../components/StatCard';
+import { IconContacts, IconProducts, IconSuppliers, IconPurchases, IconSales } from '../components/Icons';
 
 function formatPrice(value) {
   return new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 0 }).format(value) + ' FCFA';
@@ -61,26 +62,31 @@ export default function DashboardPage({ onNavigate }) {
         <>
           <div className="stats-grid">
             <StatCard
+              icon={<IconContacts size={24} />}
               label="Contacts enregistrés"
               value={stats.contacts.total}
               onClick={() => onNavigate('clients')}
             />
             <StatCard
+              icon={<IconProducts size={24} />}
               label="Produits au catalogue"
               value={stats.products.total}
               onClick={() => onNavigate('products')}
             />
             <StatCard
+              icon={<IconSuppliers size={24} />}
               label="Fournisseurs enregistrés"
               value={stats.suppliers.total}
               onClick={() => onNavigate('suppliers')}
             />
             <StatCard
+              icon={<IconPurchases size={24} />}
               label="Commandes d'achat"
               value={stats.purchasers.total}
               onClick={() => onNavigate('purchases')}
             />
             <StatCard
+              icon={<IconSales size={24} />}
               label="Ventes enregistrées"
               value={stats.sales.total}
               onClick={() => onNavigate('sales')}
