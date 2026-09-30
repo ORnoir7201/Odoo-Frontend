@@ -14,18 +14,19 @@ export default function SalesPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [onlyMine, setOnlyMine] = useState(true);
 
   const loadSales = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      setSales(await getSales());
+      setSales(await getSales(onlyMine));
     } catch (err) {
       setError(err.message);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [onlyMine]);
 
   useEffect(() => {
     loadSales();
@@ -95,6 +96,16 @@ export default function SalesPage() {
         <div className="panel__header-row">
           <h2 className="panel__title">Devis enregistrés</h2>
           <div style={{ display: 'flex', gap: 10 }}>
+            {onlyMine ? (
+              <span className="filter-chip">
+                Mes Devis
+                <button onClick={() => setOnlyMine(false)} aria-label="Retirer le filtre">✕</button>
+              </span>
+            ) : (
+              <button className="btn btn--ghost" onClick={() => setOnlyMine(true)} style={{ fontSize: 13 }}>
+                Mes Devis
+              </button>
+            )}
             <SearchInput value={searchTerm} onChange={setSearchTerm} placeholder="Rechercher un devis…" />
             <button className="btn btn--ghost" onClick={loadSales}>Rafraîchir</button>
             <button className="btn btn--primary" onClick={() => setIsDialogOpen(true)}>+ Créer</button>
@@ -108,7 +119,7 @@ export default function SalesPage() {
           onRowClick={(order) => setSelectedId(order.id)}
         />
       </section>
-
+    
       {isDialogOpen && (
         <Dialog title="Nouveau devis" onClose={() => setIsDialogOpen(false)}>
           <SaleForm onSubmit={handleCreate} onCancel={() => setIsDialogOpen(false)} isSubmitting={isSubmitting} />

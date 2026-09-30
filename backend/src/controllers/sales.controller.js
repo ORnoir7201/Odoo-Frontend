@@ -91,15 +91,20 @@ async function getPaymentTerms(req, res) {
  */
 async function getSales(req, res) {
   try {
+    const onlyMine = req.query.onlyMine !== 'false'; // true par défaut
+    const session = req.odooSession;
+
+    const domain = onlyMine ? [['user_id', '=', session.uid]] : [];
+
     const orders = await odooClient.execute(
       'sale.order',
       'search_read',
-      [[]],
+      [domain],
       {
-        fields: ['id', 'name', 'partner_id', 'user_id','company_id', 'date_order', 'amount_total', 'state'],
+        fields: ['id', 'name', 'partner_id', 'user_id', 'company_id', 'date_order', 'amount_total', 'state'],
         order: 'create_date desc',
       },
-      req.odooSession
+      session
     );
 
     const withLabels = orders.map((o) => ({ ...o, state_label: STATE_LABELS[o.state] || o.state }));
@@ -126,7 +131,7 @@ async function getSaleDetail(req, res) {
         fields: [
           'name', 'partner_id', 'user_id', 'company_id', 'date_order', 'validity_date',
           'payment_term_id', 'amount_untaxed', 'amount_tax', 'amount_total',
-          'state', 'order_line', 'access_url',
+          'state', 'order_line', 'access_url', 'description_sale',
         ],
       },
       session
@@ -145,7 +150,7 @@ async function getSaleDetail(req, res) {
         'res.partner',
         'read',
         [[order.partner_id[0]]],
-        { fields: ['street', 'city', 'zip', 'country_id'] },
+        { fields: ['street', 'street2', 'city', 'zip', 'country_id'] },
         session
       );
       partnerAddress = partners[0];
@@ -390,7 +395,7 @@ async function getShareLink(req, res) {
 async function invoiceSale(req, res) {
   try {
     const { id } = req.params;
-    await odooClient.execute('sale.order', '_create_invoices', [[Number(id)]], {}, req.odooSession);
+    await odooClient.execute('sale.order', 'action_invoice_create', [[Number(id)]], {}, req.odooSession);
     res.json({ success: true });
   } catch (error) {
     console.error('Erreur invoiceSale:', error.message);

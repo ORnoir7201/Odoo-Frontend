@@ -16,15 +16,21 @@ import ThemeSwitcher, { applyStoredTheme } from './components/ThemeSwitcher';
 import { useState, useEffect } from 'react';
 import ConfigurationPage from './pages/ConfigurationPage';
 import { IconDashboard, IconContacts, IconProducts, IconSuppliers, IconPurchases, IconSales, IconSettings } from './components/Icons';
+import ProjectsPage from './pages/ProjectsPage';
+import { IconProjects2 } from './components/Icons';
+import BackgroundDecoration from './components/BackgroundDecoration';
+import InvoicingPage from './pages/InvoicingPage';
 
 const TABS = [
   { id: 'dashboard', label: 'Tableau de bord', icon: <IconDashboard size={16} /> },
-  { id: 'clients', label: 'Contacts', icon: <IconContacts size={16} /> },
-  { id: 'products', label: 'Produits', icon: <IconProducts size={16} /> },
+  { id: 'clients', label: 'Clients', icon: <IconContacts size={16} /> },
+  { id: 'products', label: 'Articles', icon: <IconProducts size={16} /> },
   { id: 'suppliers', label: 'Fournisseurs', icon: <IconSuppliers size={16} /> },
   { id: 'purchases', label: 'Achats', icon: <IconPurchases size={16} /> },
   { id: 'sales', label: 'Ventes', icon: <IconSales size={16} /> },
   { id: 'settings', label: 'Configuration', icon: <IconSettings size={16} /> },
+  { id: 'projects', label: 'Projets', icon: <IconProjects2 size={16} /> },
+  { id: 'invoicing', label: 'Facturation', icon: <IconPurchases size={16} /> },
 ];
 
 const PAGES = {
@@ -35,6 +41,8 @@ const PAGES = {
   purchases: PurchasesPage,
   sales: SalesPage,
   settings: ConfigurationPage,
+  projects: ProjectsPage,
+  invoicing: InvoicingPage,
 };
 
 function App() {
@@ -64,6 +72,7 @@ function App() {
 
   return (
     <div className="app">
+      <BackgroundDecoration />
       <nav className="app-nav">
         <span className="app-nav__brand">Odoo Front</span>
         <div className="app-nav__tabs">
@@ -78,9 +87,11 @@ function App() {
             </button>
           ))}
         </div>
-        <ThemeSwitcher />
-        <CompanySwitcher />
-        <UserMenu onLogout={handleLogout} />
+        <div className="app-nav__actions">
+          <ThemeSwitcher />
+          <CompanySwitcher />
+          <UserMenu onLogout={handleLogout} />
+        </div>
       </nav>
 
       <ActivePage onNavigate={setActiveTab} />

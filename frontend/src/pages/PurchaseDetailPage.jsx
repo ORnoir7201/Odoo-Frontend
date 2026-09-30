@@ -11,8 +11,7 @@ import {
 } from '../api/purchases';
 import Dialog from '../components/Dialog';
 import PurchaseForm from '../components/PurchaseForm';
-import DocumentHeader from '../components/DocumentHeader';
-import DocumentFooter from '../components/DocumentFooter';
+import PrintPreview from '../components/PrintPreview';
 
 const STEPS = [
   { key: 'draft', label: 'Demande de prix' },
@@ -42,6 +41,7 @@ export default function PurchaseDetailPage({ purchaseId, onBack, onDeleted, onDu
   const [actionLoading, setActionLoading] = useState(false);
   const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isPrintOpen, setIsPrintOpen] = useState(false);
 
   const load = useCallback(async () => {
     setIsLoading(true);
@@ -123,7 +123,7 @@ export default function PurchaseDetailPage({ purchaseId, onBack, onDeleted, onDu
   }
 
   function handlePrint() {
-    window.print();
+    setIsPrintOpen(true);
   }
 
   async function handleEditSubmit(formData) {
@@ -147,8 +147,6 @@ export default function PurchaseDetailPage({ purchaseId, onBack, onDeleted, onDu
         <button className="btn btn--ghost" onClick={onBack}>← Retour</button>
       </div>
     </div>
-
-    <DocumentHeader />
 
     <header className="page__header">
       <h1>Demande de prix N°{order.name}</h1>
@@ -208,11 +206,7 @@ export default function PurchaseDetailPage({ purchaseId, onBack, onDeleted, onDu
         <div className="status-steps__step status-steps__step--cancelled">Annulée</div>
       </div>
     )}
-
-    <table className="print-doc">
-      <tbody>
-        <tr>
-          <td>
+   
             <section className="panel">
               <div className="purchase-info-grid">
                 <div>
@@ -283,18 +277,7 @@ export default function PurchaseDetailPage({ purchaseId, onBack, onDeleted, onDu
                 <div><span>Taxes</span><span>{formatPrice(order.amount_tax)}</span></div>
                 <div className="purchase-totals__grand"><span>Total</span><span>{formatPrice(order.amount_total)}</span></div>
               </div>
-            </section>
-          </td>
-        </tr>
-      </tbody>
-      <tfoot>
-        <tr>
-          <td>
-            <DocumentFooter />
-          </td>
-        </tr>
-      </tfoot>
-    </table>
+            </section>          
 
     {isEditOpen && (
       <Dialog title={`Modifier ${order.name}`} onClose={() => setIsEditOpen(false)}>
@@ -306,6 +289,29 @@ export default function PurchaseDetailPage({ purchaseId, onBack, onDeleted, onDu
           isSubmitting={actionLoading}
         />
       </Dialog>
+    )}
+
+    {isPrintOpen && (
+      <PrintPreview
+        title={order.state === 'purchase' || order.state === 'done' ? `Commande n° ${order.name}` : `Demande de prix N°${order.name}`}
+        infoItems={[
+          { label: 'Fournisseur', value: order.partner_id ? order.partner_id[1] : '—' },
+          { label: 'Adresse', value: [order.partner_address?.street, order.partner_address?.city, order.partner_address?.country_id ? order.partner_address.country_id[1] : null].filter(Boolean).join(', ') || '—' },
+          { label: 'Société', value: order.company_id ? order.company_id[1] : '—' },
+          { label: 'Responsable Achats', value: order.user_id ? order.user_id[1] : '—' },
+          { label: 'Référence fournisseur', value: order.partner_ref || '—' },
+          { label: 'Date de la commande', value: formatDate(order.date_order) },
+        ]}
+        lineItems={lines.map((l) => ({
+          article: l.product_id ? l.product_id[1] : l.name,
+          quantity: l.product_qty,
+          priceUnit: l.price_unit,
+          taxNames: l.tax_names.join(', '),
+          subtotal: l.price_subtotal,
+        }))}
+        totals={{ untaxed: order.amount_untaxed, tax: order.amount_tax, total: order.amount_total }}
+        onClose={() => setIsPrintOpen(false)}
+      />
     )}
   </div>
 );

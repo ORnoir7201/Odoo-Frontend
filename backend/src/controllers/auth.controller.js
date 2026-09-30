@@ -16,28 +16,19 @@ const JWT_EXPIRES_IN = '8h';
  */
 async function login(req, res) {
   try {
-    const { email, password } = req.body;
+    const { email, password, db } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: 'Email et mot de passe requis',
-      });
+      return res.status(400).json({ success: false, message: 'Email et mot de passe requis' });
     }
 
-    const uid = await odooClient.verifyUserCredentials(email, password);
+    const uid = await odooClient.verifyUserCredentials(email, password, db);
 
     if (!uid) {
-      return res.status(401).json({
-        success: false,
-        message: 'Email ou mot de passe incorrect',
-      });
+      return res.status(401).json({ success: false, message: 'Email ou mot de passe incorrect' });
     }
 
-    // On crée d'abord une session temporaire (sans société active) pour
-    // pouvoir faire un premier appel Odoo et récupérer le nom + les
-    // sociétés accessibles de cette personne.
-    const tempSession = { uid, password };
+    const tempSession = { uid, password, dbName: db };
     const users = await odooClient.execute(
       'res.users',
       'read',
@@ -51,6 +42,7 @@ async function login(req, res) {
       uid,
       email,
       password,
+      dbName: db,
       companyId: userInfo.company_id ? userInfo.company_id[0] : null,
       companyIds: userInfo.company_ids || [],
     });
@@ -80,7 +72,27 @@ function logout(req, res) {
   res.json({ success: true });
 }
 
+/**
+ * GET /api/auth/databases
+ * Liste les bases de données disponibles sur ce serveur Odoo (public,
+ * comme sur l'écran de connexion natif d'Odoo).
+ */
+async function getDatabases(req, res) {
+  try {
+    const databases = await odooClient.listDatabases();
+    res.json({ success: true, data: databases });
+  } catch (error) {
+    console.error('Erreur getDatabases:', error.message);
+    res.status(500).json({
+      success: false,
+      message: 'Impossible de récupérer la liste des bases (elle est peut-être désactivée sur ce serveur)',
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
   login,
   logout,
+  getDatabases,
 };

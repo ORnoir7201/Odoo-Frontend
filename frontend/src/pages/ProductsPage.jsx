@@ -81,8 +81,8 @@ export default function ProductsPage() {
   return (
     <div className="page">
       <header className="page__header">
-        <p className="page__eyebrow">Odoo · Catalogue produits</p>
-        <h1>Produits</h1>
+        <p className="page__eyebrow">Odoo · Catalogue articles</p>
+        <h1>Articles</h1>
         <p className="page__subtitle">
           Connecté en direct à l'instance Odoo — chaque ligne ci-dessous est un enregistrement réel du modèle <code>product.product</code>.
         </p>
@@ -90,9 +90,9 @@ export default function ProductsPage() {
 
       <section className="panel">
         <div className="panel__header-row">
-          <h2 className="panel__title">Produits enregistrés</h2>
+          <h2 className="panel__title">Articles enregistrés</h2>
           <div style={{ display: 'flex', gap: 10 }}>
-            <SearchInput value={searchTerm} onChange={setSearchTerm} placeholder="Rechercher un produit…" />
+            <SearchInput value={searchTerm} onChange={setSearchTerm} placeholder="Rechercher un article…" />
             <button className="btn btn--ghost" onClick={loadProducts}>Rafraîchir</button>
             <button className="btn btn--primary" onClick={() => setIsDialogOpen(true)}>+ Créer</button>
           </div>
@@ -107,7 +107,7 @@ export default function ProductsPage() {
       </section>
 
       {isDialogOpen && (
-        <Dialog title="Nouveau produit" onClose={() => setIsDialogOpen(false)}>
+        <Dialog title="Nouvel Article" onClose={() => setIsDialogOpen(false)}>
           <ProductForm onSubmit={handleCreate} onCancel={() => setIsDialogOpen(false)} isSubmitting={isSubmitting} />
         </Dialog>
       )}

@@ -12,8 +12,7 @@ import {
 } from '../api/sales';
 import Dialog from '../components/Dialog';
 import SaleForm from '../components/SaleForm';
-import DocumentHeader from '../components/DocumentHeader';
-import DocumentFooter from '../components/DocumentFooter';
+import PrintPreview from '../components/PrintPreview';
 
 const STEPS = [
   { key: 'draft', label: 'Devis' },
@@ -37,6 +36,17 @@ function formatSimpleDate(dateString) {
   return new Date(dateString).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
+function formatAddress(partner) {
+  if (!partner) return '—';
+  const parts = [];
+  if (partner.street) parts.push(partner.street);
+  if (partner.street2) parts.push(partner.street2);
+  const cityLine = [partner.zip, partner.city].filter(Boolean).join(' ');
+  if (cityLine) parts.push(cityLine);
+  if (partner.country_id) parts.push(partner.country_id[1]);
+  return parts.length > 0 ? parts.join(', ') : '—';
+}
+
 export default function SaleDetailPage({ saleId, onBack, onDeleted, onDuplicated }) {
   const [detail, setDetail] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -44,6 +54,7 @@ export default function SaleDetailPage({ saleId, onBack, onDeleted, onDuplicated
   const [actionLoading, setActionLoading] = useState(false);
   const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isPrintOpen, setIsPrintOpen] = useState(false);
 
   const load = useCallback(async () => {
     setIsLoading(true);
@@ -134,7 +145,7 @@ export default function SaleDetailPage({ saleId, onBack, onDeleted, onDuplicated
   }
 
   function handlePrint() {
-    window.print();
+    setIsPrintOpen(true);
   }
 
   async function handleEditSubmit(formData) {
@@ -158,8 +169,6 @@ export default function SaleDetailPage({ saleId, onBack, onDeleted, onDuplicated
         <button className="btn btn--ghost" onClick={onBack}>← Retour</button>
       </div>
     </div>
-
-    <DocumentHeader />
 
     <header className="page__header">
       <h1>Devis N°{order.name}</h1>
@@ -221,10 +230,7 @@ export default function SaleDetailPage({ saleId, onBack, onDeleted, onDuplicated
       </div>
     )}
 
-    <table className="print-doc">
-      <tbody>
-        <tr>
-          <td>
+    
             <section className="panel">
               <div className="purchase-info-grid">
                 <div>
@@ -234,11 +240,7 @@ export default function SaleDetailPage({ saleId, onBack, onDeleted, onDuplicated
 
                 <div>
                   <p className="field__label">Adresse</p>
-                  <p>
-                    {order.partner_address?.street || '—'}
-                    {order.partner_address?.city && `, ${order.partner_address.city}`}
-                    {order.partner_address?.country_id && `, ${order.partner_address.country_id[1]}`}
-                  </p>
+                  <p>{formatAddress(order.partner_address)}</p>
                 </div>
 
                 <div>
@@ -295,17 +297,7 @@ export default function SaleDetailPage({ saleId, onBack, onDeleted, onDuplicated
                 <div className="purchase-totals__grand"><span>Total</span><span>{formatPrice(order.amount_total)}</span></div>
               </div>
             </section>
-          </td>
-        </tr>
-      </tbody>
-      <tfoot>
-        <tr>
-          <td>
-            <DocumentFooter />
-          </td>
-        </tr>
-      </tfoot>
-    </table>
+          
 
     {isEditOpen && (
       <Dialog title={`Modifier ${order.name}`} onClose={() => setIsEditOpen(false)}>
@@ -317,6 +309,30 @@ export default function SaleDetailPage({ saleId, onBack, onDeleted, onDuplicated
           isSubmitting={actionLoading}
         />
       </Dialog>
+    )}
+    {isPrintOpen && (
+      <PrintPreview
+        title={`Devis N°${order.name}`}
+        infoItems={[
+          { label: 'Client', value: order.partner_id ? order.partner_id[1] : '—' },
+          { label: 'Adresse', value: formatAddress(order.partner_address) },
+          { label: 'Société', value: order.company_id ? order.company_id[1] : '—' },
+          { label: 'Vendeur', value: order.user_id ? order.user_id[1] : '—' },
+          { label: 'Date du devis', value: formatDate(order.date_order) },
+          { label: 'Validité', value: formatSimpleDate(order.validity_date) },
+          { label: 'Conditions de paiement', value: order.payment_term_id ? order.payment_term_id[1] : '—' },
+        ]}
+        lineItems={lines.map((l) => ({
+          article: l.product_id ? l.product_id[1] : l.name,
+          quantity: l.product_uom_qty,
+          priceUnit: l.price_unit,
+          discount: l.discount,
+          taxNames: l.tax_names.join(', '),
+          subtotal: l.price_subtotal,
+        }))}
+        totals={{ untaxed: order.amount_untaxed, tax: order.amount_tax, total: order.amount_total }}
+        onClose={() => setIsPrintOpen(false)}
+      />
     )}
   </div>
 );

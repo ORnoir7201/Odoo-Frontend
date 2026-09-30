@@ -201,7 +201,7 @@ export default function ProductForm({ editingProduct, onSubmit, onCancel, isSubm
 
       <div className="client-form__actions">
         <button type="submit" className="btn btn--primary" disabled={isSubmitting}>
-          {isSubmitting ? 'Enregistrement…' : isEditing ? 'Enregistrer les modifications' : 'Ajouter le produit'}
+          {isSubmitting ? 'Enregistrement…' : isEditing ? 'Enregistrer les modifications' : "Ajouter l'article"}
         </button>
         <button type="button" className="btn btn--ghost" onClick={onCancel}>
           Annuler

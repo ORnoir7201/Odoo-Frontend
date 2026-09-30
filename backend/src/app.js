@@ -13,6 +13,9 @@ const salesRoutes = require('./routes/sales.routes');
 const settingsRoutes = require('./routes/settings.routes');
 const requireAuth = require('./middleware/auth.middleware');
 const usersRoutes = require('./routes/users.routes');
+const projectsRoutes = require('./routes/projects.routes');
+const invoicesRoutes = require('./routes/invoices.routes');
+const paymentsRoutes = require('./routes/payments.routes');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -44,6 +47,9 @@ app.use('/api/purchases', requireAuth, purchasesRoutes);
 app.use('/api/sales', requireAuth, salesRoutes);
 app.use('/api/settings', requireAuth, settingsRoutes);
 app.use('/api/settings/users', requireAuth, usersRoutes);
+app.use('/api/projects', requireAuth, projectsRoutes);
+app.use('/api/invoices', requireAuth, invoicesRoutes);
+app.use('/api/payments', requireAuth, paymentsRoutes);
 
 app.listen(PORT, () => {
   console.log(` Backend démarré sur http://localhost:${PORT}`);

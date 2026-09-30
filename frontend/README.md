@@ -58,3 +58,7 @@ Puis ouvrir l'URL affichée dans le terminal (en général `http://localhost:517
 - Un tableau "Contacts enregistrés" listant les contacts venant d'Odoo
 - Ajouter un contact via le formulaire doit le faire apparaître dans le
   tableau juste après, et dans Odoo directement (menu Contacts)
+
+code pour ajouter la description dans les pages de détails 
+<td>{line.product_id ? line.product_id[1] : '—'}</td>
+                        <td>{line.name || '—'}</td>

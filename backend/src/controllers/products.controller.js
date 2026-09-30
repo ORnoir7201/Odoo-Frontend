@@ -69,7 +69,7 @@ async function getProducts(req, res) {
       {
         fields: [
           'id', 'name', 'default_code', 'barcode', 'type', 'list_price',
-          'standard_price', 'qty_available', 'categ_id', 'company_id',
+          'standard_price', 'qty_available', 'categ_id', 'company_id', 'description_sale', 'description_purchase',
         ],
         order: 'create_date desc',
       },
@@ -105,7 +105,7 @@ async function getProductDetail(req, res) {
         fields: [
           'name', 'default_code', 'barcode', 'type', 'list_price', 'standard_price',
           'qty_available', 'categ_id', 'company_id', 'sale_ok', 'purchase_ok',
-          'taxes_id', 'description_sale', 'image',
+          'taxes_id', 'description_sale', 'image',  'description_purchase',
         ],
       },
       session

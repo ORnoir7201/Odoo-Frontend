@@ -10,6 +10,11 @@ export async function getLanguages() {
   return data.data;
 }
 
+export async function getAppAccessFields() {
+  const data = await apiFetch('/settings/users/app-access-fields');
+  return data.data;
+}
+
 export async function getUserDetail(id) {
   const data = await apiFetch(`/settings/users/${id}`);
   return data.data;

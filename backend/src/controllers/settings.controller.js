@@ -178,7 +178,7 @@ async function getCompanyAdminDetail(req, res) {
  */
 async function createCompanyAdmin(req, res) {
   try {
-    const { name, email, phone, website, vat, street, street2, city, zip } = req.body;
+    const { name, email, phone, website, vat, street, street2, city, zip, logoBase64 } = req.body;
 
     if (!name) {
       return res.status(400).json({ success: false, message: 'Le nom de la société est obligatoire' });
@@ -198,6 +198,7 @@ async function createCompanyAdmin(req, res) {
           street2: street2 || false,
           city: city || false,
           zip: zip || false,
+          logo: logoBase64 || false,
         },
       ],
       {},

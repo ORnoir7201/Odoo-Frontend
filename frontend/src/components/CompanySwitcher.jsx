@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
 import { getMyCompanies, switchCompany } from '../api/settings';
 import useClickOutside from '../hooks/useClickOutside';
+import { IconBuilding } from './Icons';
+
+function getInitials(name) {
+  if (!name) return '—';
+  const words = name.trim().split(/\s+/);
+  if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
+  return (words[0][0] + words[1][0]).toUpperCase();
+}
 
 export default function CompanySwitcher() {
   const [companies, setCompanies] = useState([]);
@@ -8,7 +16,6 @@ export default function CompanySwitcher() {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useClickOutside(() => setIsOpen(false));
   const [isSwitching, setIsSwitching] = useState(false);
-
 
   useEffect(() => {
     getMyCompanies()
@@ -19,10 +26,10 @@ export default function CompanySwitcher() {
       .catch((err) => console.error('Sociétés accessibles:', err.message));
   }, []);
 
-  // Une seule société ? Pas besoin d'afficher un sélecteur.
   if (companies.length <= 1) return null;
 
   const activeCompany = companies.find((c) => c.id === activeCompanyId);
+  const companyName = activeCompany ? activeCompany.name : '—';
 
   async function handleSwitch(companyId) {
     if (companyId === activeCompanyId) {
@@ -32,8 +39,6 @@ export default function CompanySwitcher() {
     setIsSwitching(true);
     try {
       await switchCompany(companyId);
-      // On recharge toute la page : le plus simple et le plus fiable pour
-      // que TOUTES les données affichées reflètent la nouvelle société.
       window.location.reload();
     } catch (err) {
       alert(`Impossible de changer de société : ${err.message}`);
@@ -42,15 +47,31 @@ export default function CompanySwitcher() {
   }
 
   return (
-    <div className="purchase-toolbar__menu" ref={menuRef}>
-      <button className="app-nav__tab" onClick={() => setIsOpen((v) => !v)} disabled={isSwitching}>
-        {activeCompany ? activeCompany.name : '—'} ▾
+    <div className="nav-icon-control" ref={menuRef}>
+      <button
+        className="nav-icon-control__button"
+        onClick={() => setIsOpen((v) => !v)}
+        disabled={isSwitching}
+        title={`Entreprise : ${companyName}`}
+      >
+        <IconBuilding size={26} />
+        <span className="nav-icon-control__initials">
+          {getInitials(companyName)}
+        </span>
+        
       </button>
+
       {isOpen && (
-        <div className="dropdown-menu">
+        <div className="dropdown-menu nav-icon-control__dropdown">
           {companies.map((c) => (
             <button key={c.id} onClick={() => handleSwitch(c.id)}>
-              {c.id === activeCompanyId ? '✓ ' : ''}{c.name}
+              <span className="nav-dropdown__avatar nav-avatar--company">
+                {getInitials(c.name)}
+              </span>
+              <span className="nav-dropdown__name">{c.name}</span>
+              {c.id === activeCompanyId && (
+                <span className="nav-dropdown__check">✓</span>
+              )}
             </button>
           ))}
         </div>

@@ -91,7 +91,8 @@ export default function SaleForm({ editingOrder, editingLines, onSubmit, onCance
 
   function handleProductChange(key, productId) {
     const product = products.find((p) => String(p.id) === productId);
-    updateLine(key, { productId, priceUnit: product ? String(product.list_price) : '' });
+    updateLine(key, { productId, priceUnit: product ? String(product.list_price) : '',
+      description: product ? (product.description_sale || product.name) : '', });
   }
 
   function addLine() {
@@ -203,14 +204,14 @@ export default function SaleForm({ editingOrder, editingLines, onSubmit, onCance
         </label>
       </div>
 
-      <p className="client-form__section-label">Produits</p>
+      <p className="client-form__section-label">Articles</p>
 
       <div className="order-lines">
         <div className="order-lines__rows">
           {computedLines.map((line) => (
             <div className="order-line-row order-line-row--sale" key={line.key}>
               <label className="field">
-                <span className="field__label">Produit</span>
+                <span className="field__label">Article</span>
                 <select value={line.productId} onChange={(e) => handleProductChange(line.key, e.target.value)}>
                   <option value="">— Sélectionner —</option>
                   {products.map((p) => (
@@ -277,6 +278,7 @@ export default function SaleForm({ editingOrder, editingLines, onSubmit, onCance
               >
                 ×
               </button>
+              
             </div>
           ))}
         </div>

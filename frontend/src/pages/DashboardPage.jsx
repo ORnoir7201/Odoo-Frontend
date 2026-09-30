@@ -63,13 +63,13 @@ export default function DashboardPage({ onNavigate }) {
           <div className="stats-grid">
             <StatCard
               icon={<IconContacts size={24} />}
-              label="Contacts enregistrés"
+              label="Clients enregistrés"
               value={stats.contacts.total}
               onClick={() => onNavigate('clients')}
             />
             <StatCard
               icon={<IconProducts size={24} />}
-              label="Produits au catalogue"
+              label="Article au catalogue"
               value={stats.products.total}
               onClick={() => onNavigate('products')}
             />
@@ -111,9 +111,9 @@ export default function DashboardPage({ onNavigate }) {
             </section>
 
             <section className="panel">
-              <h2 className="panel__title">Derniers produits ajoutés</h2>
+              <h2 className="panel__title">Derniers articles ajoutés</h2>
               {stats.products.recent.length === 0 ? (
-                <p className="state-message">Aucun produit pour l'instant.</p>
+                <p className="state-message">Aucun article pour l'instant.</p>
               ) : (
                 <ul className="recent-list">
                   {stats.products.recent.map((p) => (

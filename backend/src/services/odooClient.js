@@ -24,17 +24,31 @@ const objectClient = xmlrpc.createClient({
   path: '/xmlrpc/2/object',
 });
 
+const dbClient = xmlrpc.createClient({
+  host: odooConfig.url.replace(/^https?:\/\//, ''),
+  port: odooConfig.port,
+  path: '/xmlrpc/2/db',
+});
+
+function listDatabases() {
+  return new Promise((resolve, reject) => {
+    dbClient.methodCall('list', [], (error, databases) => {
+      if (error) return reject(error);
+      resolve(databases);
+    });
+  });
+}
+
 /**
  * Vérifie des identifiants Odoo (page de connexion).
  * Renvoie le uid Odoo de la personne si valides, ou `false` sinon.
  * Ne met rien en cache : sert uniquement à valider un login.
  */
-function verifyUserCredentials(login, password) {
+function verifyUserCredentials(login, password, dbName) {
+  const db = dbName || odooConfig.db;
   return new Promise((resolve, reject) => {
-    commonClient.methodCall('authenticate', [odooConfig.db, login, password, {}], (error, uid) => {
-      if (error) {
-        return reject(error);
-      }
+    commonClient.methodCall('authenticate', [db, login, password, {}], (error, uid) => {
+      if (error) return reject(error);
       resolve(uid || false);
     });
   });
@@ -73,7 +87,7 @@ async function execute(model, method, args = [], kwargs = {}, session) {
   return new Promise((resolve, reject) => {
     objectClient.methodCall(
       'execute_kw',
-      [odooConfig.db, session.uid, session.password, model, method, args, finalKwargs],
+      [session.dbName || odooConfig.db, session.uid, session.password, model, method, args, finalKwargs],
       (error, result) => {
         if (error) {
           return reject(error);
@@ -126,4 +140,5 @@ module.exports = {
   verifyUserCredentials,
   execute,
   executeAsService,
+  listDatabases,
 };

@@ -28,15 +28,17 @@ async function findCountryId(countryName, session) {
  */
 async function getClients(req, res) {
   try {
+    const session = req.odooSession;
+
     const clients = await odooClient.execute(
       'res.partner',
       'search_read',
-      [[]],
+      [[['customer', '=', true]]],
       {
         fields: ['id', 'name', 'email', 'phone', 'street', 'city', 'zip', 'country_id'],
         order: 'create_date desc',
       },
-      req.odooSession
+      session
     );
 
     res.json({ success: true, data: clients });
@@ -81,6 +83,7 @@ async function createClient(req, res) {
           city: city || false,
           zip: zip || false,
           country_id: countryId,
+          customer: true,
           image: photoBase64 || false,
         },
       ],

@@ -15,6 +15,7 @@ export default function ClientsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedId, setSelectedId] = useState(null);
 
+
   const loadClients = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -81,18 +82,19 @@ export default function ClientsPage() {
   return (
     <div className="page">
       <header className="page__header">
-        <p className="page__eyebrow">Odoo · Registre des contacts</p>
-        <h1>Contacts</h1>
+        <p className="page__eyebrow">Odoo · Registre des clients</p>
+        <h1>Clients</h1>
         <p className="page__subtitle">
-          Connecté en direct à l'instance Odoo — chaque ligne ci-dessous est un enregistrement réel du modèle <code>res.partner</code>.
+          Connecté en direct à l'instance Odoo — chaque ligne ci-dessous est un contact réel marqué comme client dans <code>res.partner</code>.
         </p>
       </header>
 
       <section className="panel">
         <div className="panel__header-row">
-          <h2 className="panel__title">Contacts enregistrés</h2>
+          <h2 className="panel__title">Clients enregistrés</h2>
           <div style={{ display: 'flex', gap: 10 }}>
-            <SearchInput value={searchTerm} onChange={setSearchTerm} placeholder="Rechercher un contact…" />
+            
+            <SearchInput value={searchTerm} onChange={setSearchTerm} placeholder="Rechercher un client…" />
             <button className="btn btn--ghost" onClick={loadClients}>Rafraîchir</button>
             <button className="btn btn--primary" onClick={() => setIsDialogOpen(true)}>+ Créer</button>
           </div>
@@ -107,7 +109,7 @@ export default function ClientsPage() {
       </section>
 
       {isDialogOpen && (
-        <Dialog title="Nouveau contact" onClose={() => setIsDialogOpen(false)}>
+        <Dialog title="Nouveau client" onClose={() => setIsDialogOpen(false)}>
           <ClientForm onSubmit={handleCreate} onCancel={() => setIsDialogOpen(false)} isSubmitting={isSubmitting} />
         </Dialog>
       )}

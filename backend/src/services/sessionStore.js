@@ -17,9 +17,9 @@ const sessions = new Map();
  * @param {{ uid: number, email: string, password: string }} data
  * @returns {string} sessionId
  */
-function createSession({ uid, email, password, companyId, companyIds }) {
+function createSession({ uid, email, password, dbName, companyId, companyIds }) {
   const sessionId = crypto.randomUUID();
-  sessions.set(sessionId, { uid, email, password, companyId, companyIds, createdAt: Date.now() });
+  sessions.set(sessionId, { uid, email, password, dbName, companyId, companyIds, createdAt: Date.now() });
   return sessionId;
 }
 

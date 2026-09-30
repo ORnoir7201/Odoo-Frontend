@@ -84,6 +84,7 @@ export default function PurchaseForm({ editingOrder, editingLines, onSubmit, onC
     updateLine(key, {
       productId,
       priceUnit: product ? String(product.list_price) : '',
+      description: product ? (product.description_purchase || product.name) : '',
     });
   }
 
@@ -184,14 +185,14 @@ export default function PurchaseForm({ editingOrder, editingLines, onSubmit, onC
         </label>
       </div>
 
-      <p className="client-form__section-label">Produits</p>
+      <p className="client-form__section-label">Article</p>
 
       <div className="order-lines">
         <div className="order-lines__rows">
           {computedLines.map((line) => (
             <div className="order-line-row" key={line.key}>
               <label className="field">
-                <span className="field__label">Produit</span>
+                <span className="field__label">Article</span>
                 <select value={line.productId} onChange={(e) => handleProductChange(line.key, e.target.value)}>
                   <option value="">— Sélectionner —</option>
                   {products.map((p) => (

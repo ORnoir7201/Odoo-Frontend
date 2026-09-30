@@ -1,7 +1,7 @@
 import { apiFetch } from './http';
 
-export async function getSales() {
-  const data = await apiFetch('/sales');
+export async function getSales(onlyMine = true) {
+  const data = await apiFetch(`/sales?onlyMine=${onlyMine}`);
   return data.data;
 }
 
